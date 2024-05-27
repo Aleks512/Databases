@@ -1,0 +1,69 @@
+@startuml
+class Partner {
+  + employee_id : int
+  + firstName : string
+  + lastName : string
+  + email : string
+}
+
+class Client {
+  + siret : string
+  + companyName : string
+  + legalFormTitle : string
+}
+
+class LegalForm {
+  + title : string
+  + description : string
+}
+
+class MissionAudit {
+  + audit_id : int
+  + auditDate : string
+  + fee : float
+  + typeAuditLabel : string
+  + period_id : int
+  + siret : string
+}
+
+class TypeAudit {
+  + label : string
+  + nomination : string
+}
+
+class Manager {
+  + employee_id : int
+  + firstName : string
+  + lastName : string
+  + email : string
+}
+
+class AuditPeriod {
+  + period_id : int
+  + startDate : string
+  + endDate : string
+}
+
+class PartnerMissionAudit {
+  + partner_id : int
+  + audit_id : int
+}
+
+class ManagerMissionAudit {
+  + manager_id : int
+  + audit_id : int
+}
+
+Partner "1" -- "0..*" PartnerMissionAudit : leads
+MissionAudit "1" -- "0..*" PartnerMissionAudit
+
+Manager "1" -- "0..*" ManagerMissionAudit : manages
+MissionAudit "1" -- "0..*" ManagerMissionAudit
+
+Client "1" -- "0..*" MissionAudit : is_audited
+Client "1" --o "0..*" LegalForm : has
+
+MissionAudit "1" --o "1" TypeAudit : is_a
+AuditPeriod "1" -- "0..*" MissionAudit : includes
+
+@enduml
