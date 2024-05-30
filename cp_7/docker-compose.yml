@@ -1,0 +1,33 @@
+
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16.2-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./backup:/var/lib/postgresql/backup
+    command: >
+      sh -c "
+        mkdir -p /var/lib/postgresql/backup &&
+        exec docker-entrypoint.sh postgres
+      "
+
+  web:
+    build: .
+    env_file: .env
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
