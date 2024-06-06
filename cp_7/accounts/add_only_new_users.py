@@ -1,9 +1,3 @@
-import os
-import django
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'db_sql.settings')
-django.setup()
-
 from django.contrib.auth.models import Group
 from accounts.models import CustomUser
 
@@ -15,22 +9,22 @@ users_data = [
     {'email': 'developer2@example.com', 'password': 'password', 'first_name': 'Developer', 'last_name': 'Two', 'group': 'Developers'},
 ]
 
-# Boucle sur les données des utilisateurs pour les créer et les ajouter aux groupes
+# Boucler sur les données des utilisateurs pour les créer et les ajouter aux groupes
 for user_data in users_data:
     # Crée l'utilisateur s'il n'existe pas déjà
     user, created = CustomUser.objects.get_or_create(email=user_data['email'], defaults={
         'first_name': user_data['first_name'],
         'last_name': user_data['last_name'],
     })
-    # Si l'utilisateur a été créé, définissez son mot de passe
+    # Si l'utilisateur a été créé, définir son mot de passe
     if created:
         user.set_password(user_data['password'])
         user.save()
     
-    # Obtenez ou créez le groupe spécifié
+    # Obtenir ou créez le groupe spécifié
     group, _ = Group.objects.get_or_create(name=user_data['group'])
     
-    # Ajoutez l'utilisateur au groupe
+    # Ajouter l'utilisateur au groupe
     user.groups.add(group)
     user.save()
 
